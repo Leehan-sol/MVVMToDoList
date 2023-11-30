@@ -10,6 +10,7 @@ import UIKit
 
 protocol TodoListDelegate {
     func sendTodo(data: [TodoListModel])
+    func sendDone(data: [DoneListModel])
 }
 
 class MainViewController: UIViewController {
@@ -17,6 +18,7 @@ class MainViewController: UIViewController {
     // MARK: - Properties
     let mainView = MainView()
     var todo = [TodoListModel]()
+    var done = [DoneListModel]()
     
     // MARK: - Life Cycle
     override func loadView() {
@@ -51,6 +53,8 @@ class MainViewController: UIViewController {
     
     @objc func goDoneButtonTapped(){
         let doneVC = DoneViewController()
+        doneVC.delegate = self
+        doneVC.doneList = done
         self.navigationController?.pushViewController(doneVC, animated: true)
     }
     
@@ -59,10 +63,14 @@ class MainViewController: UIViewController {
 }
 
 
-
+// MARK: - TodoListDelegate
 extension MainViewController: TodoListDelegate {
     
     func sendTodo(data: [TodoListModel]) {
         self.todo = data
+    }
+    
+    func sendDone(data: [DoneListModel]) {
+        self.done = data
     }
 }

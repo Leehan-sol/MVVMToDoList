@@ -13,7 +13,9 @@ class TodoViewController: UIViewController {
     private let todoView = TodoView()
     private let doneVC = DoneViewController()
     var todoList: [TodoListModel] = []
+    var doneList: [DoneListModel] = []
     var delegate: TodoListDelegate?
+    
     
     // MARK: - Life Cycle
     override func loadView() {
@@ -25,11 +27,6 @@ class TodoViewController: UIViewController {
         setUI()
         setAddtarget()
         setTableView()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(true)
-        delegate?.sendTodo(data: todoList)
     }
     
     // MARK: - Func
@@ -51,28 +48,29 @@ class TodoViewController: UIViewController {
     // MARK: - @objc
     // 할일 추가
     @objc func addTodoButtonTapped() {
-        let alertController = UIAlertController(title: "Add Todo", message: "", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Add Todo", message: "", preferredStyle: .alert)
         
-        alertController.addTextField { textField in
+        alert.addTextField { textField in
             textField.placeholder = "Todo"
         }
         
         let addAction = UIAlertAction(title: "Add", style: .default) { [weak self] action in
-            guard let content = alertController.textFields?.first?.text else { return }
+            guard let content = alert.textFields?.first?.text else { return }
             if content.isEmpty { return }
             
             let newTodo = TodoListModel(description: content, isCompleted: false)
             
             self?.todoList.append(newTodo)
+            self?.delegate?.sendTodo(data: [newTodo])
             self?.todoView.todoTableView.reloadData()
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         
-        alertController.addAction(addAction)
-        alertController.addAction(cancelAction)
+        alert.addAction(addAction)
+        alert.addAction(cancelAction)
         
-        self.present(alertController, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
     
 }
@@ -83,7 +81,6 @@ extension TodoViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
-    
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
@@ -113,31 +110,38 @@ extension TodoViewController: UITableViewDataSource {
         cell.textLabel?.text = todoList[indexPath.row].description
         cell.doneSwitch.isOn = todoList[indexPath.row].isCompleted
         
-        cell.doneSwitch.addTarget(self, action: #selector(switchValueChanged(_:)), for: .valueChanged)
+        cell.textLabel?.textColor = todoList[indexPath.row].isCompleted ? UIColor.gray : UIColor.black
+        cell.doneSwitch.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
+        
         return cell
     }
     
-    @objc func switchValueChanged(_ sender: UISwitch) {
+    @objc func switchChanged(_ sender: UISwitch) {
         guard let cell = sender.superview?.superview as? TodoTableViewCell,
-              let indexPath = todoView.todoTableView.indexPath(for: cell) else {
-            return
-        }
+              let indexPath = todoView.todoTableView.indexPath(for: cell) else
+        { return }
         
         var todoItem = todoList[indexPath.row]
         
-        todoItem.isCompleted = sender.isOn
-        
-        // Print switch value change information
-        print("Switch value changed for \(todoItem.description): \(sender.isOn)")
-        
-        // Update doneList based on the switch value
-        //        if sender.isOn {
-        //            doneVC.doneList.append(todoItem)
-        //        } else {
-        //            if let index = doneList.firstIndex(where: { $0.description == todoItem.description }) {
-        //                doneVC.doneList.remove(at: index)
-        //            }
-        //        }
+        if sender.isOn {
+            todoItem.isCompleted = true
+            cell.textLabel?.textColor = UIColor.gray
+            delegate?.sendTodo(data: [todoItem])
+            
+            let Item = DoneListModel(description: todoItem.description)
+            doneList.append(Item)
+            delegate?.sendDone(data: doneList)
+        } else {
+            todoItem.isCompleted = false
+            cell.textLabel?.textColor = UIColor.black
+            delegate?.sendTodo(data: [todoItem])
+            
+            if let index = doneList.firstIndex(where: { $0.description == todoItem.description }) {
+                doneList.remove(at: index)
+                
+                delegate?.sendDone(data: doneList)
+            }
+        }
     }
     
     

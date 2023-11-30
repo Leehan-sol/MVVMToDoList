@@ -12,6 +12,7 @@ class DoneViewController: UIViewController {
     // MARK: - Properties
     private let doneView = DoneView()
     var doneList: [DoneListModel] = []
+    var delegate: TodoListDelegate?
 
     // MARK: - Life Cycle
     override func loadView() {
@@ -60,7 +61,6 @@ extension DoneViewController: UITableViewDataSource {
         }
         
         cell.textLabel?.text = doneList[indexPath.row].description
-        cell.doneSwitch.isOn = doneList[indexPath.row].isCompleted
         
         return cell
     }

@@ -9,5 +9,4 @@ import Foundation
 
 struct DoneListModel {
     var description: String
-    var isCompleted: Bool
 }
