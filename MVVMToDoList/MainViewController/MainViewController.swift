@@ -8,6 +8,7 @@
 
 import UIKit
 
+// MARK: - TodoListDelegate
 protocol TodoListDelegate {
     func sendTodo(data: [TodoListModel])
     func sendDone(data: [DoneListModel])
@@ -16,9 +17,9 @@ protocol TodoListDelegate {
 class MainViewController: UIViewController {
     
     // MARK: - Properties
-    let mainView = MainView()
-    var todo = [TodoListModel]()
-    var done = [DoneListModel]()
+    private let mainView = MainView()
+    private var todo: [TodoListModel] = []
+    private var done: [DoneListModel] = []
     
     // MARK: - Life Cycle
     override func loadView() {
@@ -32,11 +33,11 @@ class MainViewController: UIViewController {
     }
     
     // MARK: - Func
-    func setUI(){
+    private func setUI(){
         view.backgroundColor = .systemBackground
     }
     
-    func setAddtarget(){
+    private func setAddtarget(){
         mainView.goTodoButton.addTarget(self, action: #selector(goTodoButtonTapped), for: .touchUpInside)
         mainView.goDoneButton.addTarget(self, action: #selector(goDoneButtonTapped), for: .touchUpInside)
     }
@@ -46,9 +47,10 @@ class MainViewController: UIViewController {
     // MARK: - @objc
     @objc func goTodoButtonTapped(){
         let todoVC = TodoViewController()
-        todoVC.delegate = self
-        todoVC.todoList = todo
-        todoVC.doneList = done
+        let todoVM = todoVC.viewModel
+        todoVM.delegate = self
+        todoVM.todoList = todo
+        todoVM.doneList = done
         self.navigationController?.pushViewController(todoVC, animated: true)
     }
     

@@ -25,12 +25,14 @@ class DoneViewController: UIViewController {
         setTableView()
     }
     
-    func setUI(){
+    
+    // MARK: - Func
+    private func setUI(){
         view.backgroundColor = .systemBackground
     }
     
     
-    func setTableView(){
+    private func setTableView(){
         doneView.doneTableView.delegate = self
         doneView.doneTableView.dataSource = self
         doneView.doneTableView.register(TodoTableViewCell.self, forCellReuseIdentifier: "TVCell")

@@ -11,7 +11,7 @@ import Then
 
 class MainView: UIView {
     
-    // MARK: -UI Properties
+    // MARK: - UI Properties
     let goTodoButton = UIButton().then {
         $0.setTitle("TodoList", for: .normal)
         $0.setTitleColor(.black, for: .normal)

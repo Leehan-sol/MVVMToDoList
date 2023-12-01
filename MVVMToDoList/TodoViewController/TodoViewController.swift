@@ -11,11 +11,7 @@ class TodoViewController: UIViewController {
     
     // MARK: - Properties
     private let todoView = TodoView()
-    private let doneVC = DoneViewController()
-    var todoList: [TodoListModel] = []
-    var doneList: [DoneListModel] = []
-    var delegate: TodoListDelegate?
-    
+    let viewModel = TodoViewModel()
     
     // MARK: - Life Cycle
     override func loadView() {
@@ -29,16 +25,20 @@ class TodoViewController: UIViewController {
         setTableView()
     }
     
+    deinit {
+        print("TodoViewController deinitialized")
+    }
+    
     // MARK: - Func
-    func setUI(){
+    private func setUI(){
         view.backgroundColor = .systemBackground
     }
     
-    func setAddtarget(){
+    private func setAddtarget(){
         todoView.addTodoButton.addTarget(self, action: #selector(addTodoButtonTapped), for: .touchUpInside)
     }
     
-    func setTableView(){
+    private func setTableView(){
         todoView.todoTableView.delegate = self
         todoView.todoTableView.dataSource = self
         todoView.todoTableView.register(TodoTableViewCell.self, forCellReuseIdentifier: "TVCell")
@@ -58,11 +58,9 @@ class TodoViewController: UIViewController {
             guard let content = alert.textFields?.first?.text else { return }
             if content.isEmpty { return }
             
-            let newTodo = TodoListModel(description: content, isCompleted: false)
-            
-            self?.todoList.append(newTodo)
-            self?.delegate?.sendTodo(data: self?.todoList ?? [])
+            self?.viewModel.addTodo(description: content)
             self?.todoView.todoTableView.reloadData()
+            
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -89,14 +87,9 @@ extension TodoViewController: UITableViewDelegate {
     // 할일 삭제
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let deletedTodo = todoList.remove(at: indexPath.row)
+            viewModel.removeDone(with: viewModel.todoList[indexPath.row].description)
+            viewModel.removeTodo(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
-            delegate?.sendTodo(data: todoList)
-            
-            if let index = doneList.firstIndex(where: { $0.description == deletedTodo.description }) {
-                doneList.remove(at: index)
-                delegate?.sendDone(data: doneList)
-            }
         }
     }
     
@@ -106,7 +99,7 @@ extension TodoViewController: UITableViewDelegate {
 // MARK: - UITableViewDataSource
 extension TodoViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return todoList.count
+        return viewModel.todoList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -114,10 +107,10 @@ extension TodoViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.textLabel?.text = todoList[indexPath.row].description
-        cell.doneSwitch.isOn = todoList[indexPath.row].isCompleted
+        cell.textLabel?.text = viewModel.todoList[indexPath.row].description
+        cell.doneSwitch.isOn = viewModel.todoList[indexPath.row].isCompleted
         
-        cell.textLabel?.textColor = todoList[indexPath.row].isCompleted ? UIColor.gray : UIColor.black
+        cell.textLabel?.textColor = viewModel.todoList[indexPath.row].isCompleted ? UIColor.gray : UIColor.black
         cell.doneSwitch.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
         
         return cell
@@ -128,25 +121,20 @@ extension TodoViewController: UITableViewDataSource {
         guard let cell = sender.superview?.superview as? TodoTableViewCell,
               let indexPath = todoView.todoTableView.indexPath(for: cell) else { return }
         
-        var todoItem = todoList[indexPath.row]
+        var todoItem = viewModel.todoList[indexPath.row]
         
         if sender.isOn {
             todoItem.isCompleted = true
             cell.textLabel?.textColor = UIColor.gray
             
-            let item = DoneListModel(description: todoItem.description, isCompleted: true)
-            doneList.append(item)
+            viewModel.addDone(description: todoItem.description)
         } else {
             todoItem.isCompleted = false
             cell.textLabel?.textColor = UIColor.black
             
-            if let index = doneList.firstIndex(where: { $0.description == todoItem.description }) {
-                doneList.remove(at: index)
-            }
+            viewModel.removeDone(with: todoItem.description)
         }
-        todoList[indexPath.row] = todoItem
-        delegate?.sendTodo(data: todoList)
-        delegate?.sendDone(data: doneList)
+        viewModel.todoList[indexPath.row] = todoItem
     }
     
     
