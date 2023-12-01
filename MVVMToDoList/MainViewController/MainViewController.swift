@@ -48,6 +48,7 @@ class MainViewController: UIViewController {
         let todoVC = TodoViewController()
         todoVC.delegate = self
         todoVC.todoList = todo
+        todoVC.doneList = done
         self.navigationController?.pushViewController(todoVC, animated: true)
     }
     

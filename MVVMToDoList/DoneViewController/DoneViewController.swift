@@ -61,6 +61,7 @@ extension DoneViewController: UITableViewDataSource {
         }
         
         cell.textLabel?.text = doneList[indexPath.row].description
+        cell.doneSwitch.isOn = doneList[indexPath.row].isCompleted
         
         return cell
     }
