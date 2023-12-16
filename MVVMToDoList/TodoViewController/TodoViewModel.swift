@@ -8,33 +8,33 @@
 import Foundation
 
 class TodoViewModel {
-    var todoList: [TodoListModel] = []
-    var doneList: [DoneListModel] = []
-    var delegate: TodoListDelegate?
+    var dataManager: SendDataProtocol
+    let alertManager = AlertManager()
     
+    init(dataManager: SendDataProtocol) {
+        self.dataManager = dataManager
+    }
+    
+
     // 할일 추가
     func addTodo(description: String) {
         let newTodo = TodoListModel(description: description, isCompleted: false)
-        todoList.append(newTodo)
-        delegate?.sendTodo(data: todoList)
+        dataManager.todoList.append(newTodo)
     }
     
     func addDone(description: String) {
         let newDone = DoneListModel(description: description, isCompleted: true)
-        doneList.append(newDone)
-        delegate?.sendDone(data: doneList)
+        dataManager.doneList.append(newDone)
     }
     
     // 할일 삭제
     func removeTodo(at index: Int) {
-        todoList.remove(at: index)
-        delegate?.sendTodo(data: todoList)
+        dataManager.todoList.remove(at: index)
     }
     
     func removeDone(with description: String) {
-        if let index = doneList.firstIndex(where: { $0.description == description }) {
-            doneList.remove(at: index)
-            delegate?.sendDone(data: doneList)
+        if let index = dataManager.doneList.firstIndex(where: { $0.description == description }) {
+            dataManager.doneList.remove(at: index)
         }
     }
     

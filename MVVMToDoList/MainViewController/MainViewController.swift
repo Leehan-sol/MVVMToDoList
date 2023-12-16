@@ -8,18 +8,12 @@
 
 import UIKit
 
-// MARK: - TodoListDelegate
-protocol TodoListDelegate {
-    func sendTodo(data: [TodoListModel])
-    func sendDone(data: [DoneListModel])
-}
-
 class MainViewController: UIViewController {
     
     // MARK: - Properties
     private let mainView = MainView()
-    private var todo: [TodoListModel] = []
-    private var done: [DoneListModel] = []
+    private let dataManager = DataManager()
+    private var mainViewModel: MainViewModel!
     
     // MARK: - Life Cycle
     override func loadView() {
@@ -30,7 +24,10 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         setUI()
         setAddtarget()
+        setViewModel()
     }
+    
+    
     
     // MARK: - Func
     private func setUI(){
@@ -42,38 +39,29 @@ class MainViewController: UIViewController {
         mainView.goDoneButton.addTarget(self, action: #selector(goDoneButtonTapped), for: .touchUpInside)
     }
     
+    private func setViewModel(){
+        mainViewModel = MainViewModel(dataManager: dataManager)
+    }
+    
     
     
     // MARK: - @objc
-    @objc func goTodoButtonTapped(){
+    @objc func goTodoButtonTapped() {
+        // TodoViewModel 생성 및 dataManager 전달
+        let todoViewModel = TodoViewModel(dataManager: dataManager)
+        
+        // TodoViewController에 TodoViewModel 설정
         let todoVC = TodoViewController()
-        let todoVM = todoVC.viewModel
-        todoVM.delegate = self
-        todoVM.todoList = todo
-        todoVM.doneList = done
+        todoVC.viewModel = todoViewModel
+        
         self.navigationController?.pushViewController(todoVC, animated: true)
     }
     
     @objc func goDoneButtonTapped(){
         let doneVC = DoneViewController()
-        doneVC.delegate = self
-        doneVC.doneList = done
         self.navigationController?.pushViewController(doneVC, animated: true)
     }
     
     
     
-}
-
-
-// MARK: - TodoListDelegate
-extension MainViewController: TodoListDelegate {
-    
-    func sendTodo(data: [TodoListModel]) {
-        self.todo = data
-    }
-    
-    func sendDone(data: [DoneListModel]) {
-        self.done = data
-    }
 }

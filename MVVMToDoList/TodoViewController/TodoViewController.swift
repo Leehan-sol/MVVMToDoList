@@ -11,7 +11,7 @@ class TodoViewController: UIViewController {
     
     // MARK: - Properties
     private let todoView = TodoView()
-    let viewModel = TodoViewModel()
+    var viewModel: TodoViewModel!
     
     // MARK: - Life Cycle
     override func loadView() {
@@ -48,27 +48,17 @@ class TodoViewController: UIViewController {
     // MARK: - @objc
     // 할일 추가
     @objc func addTodoButtonTapped() {
-        let alert = UIAlertController(title: "Add Todo", message: "", preferredStyle: .alert)
-        
-        alert.addTextField { textField in
-            textField.placeholder = "Todo"
+        viewModel.alertManager.showAlertWithTF(from: self,
+                                               title: "할일 추가하기",
+                                               message: "",
+                                               tfText: "할일",
+                                               button1Title: "추가",
+                                               button2Title: "취소") { content in
+            if !content.isEmpty {
+                self.viewModel.addTodo(description: content)
+                self.todoView.todoTableView.reloadData()
+            }
         }
-        
-        let addAction = UIAlertAction(title: "Add", style: .default) { [weak self] action in
-            guard let content = alert.textFields?.first?.text else { return }
-            if content.isEmpty { return }
-            
-            self?.viewModel.addTodo(description: content)
-            self?.todoView.todoTableView.reloadData()
-            
-        }
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        
-        alert.addAction(addAction)
-        alert.addAction(cancelAction)
-        
-        self.present(alert, animated: true, completion: nil)
     }
     
 }
@@ -87,8 +77,6 @@ extension TodoViewController: UITableViewDelegate {
     // 할일 삭제
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            viewModel.removeDone(with: viewModel.todoList[indexPath.row].description)
-            viewModel.removeTodo(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
@@ -99,7 +87,7 @@ extension TodoViewController: UITableViewDelegate {
 // MARK: - UITableViewDataSource
 extension TodoViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.todoList.count
+        return viewModel.dataManager.todoList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -107,10 +95,10 @@ extension TodoViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.textLabel?.text = viewModel.todoList[indexPath.row].description
-        cell.doneSwitch.isOn = viewModel.todoList[indexPath.row].isCompleted
+        cell.textLabel?.text = viewModel.dataManager.todoList[indexPath.row].description
+        cell.doneSwitch.isOn = viewModel.dataManager.todoList[indexPath.row].isCompleted
         
-        cell.textLabel?.textColor = viewModel.todoList[indexPath.row].isCompleted ? UIColor.gray : UIColor.black
+        cell.textLabel?.textColor = viewModel.dataManager.todoList[indexPath.row].isCompleted ? UIColor.gray : UIColor.black
         cell.doneSwitch.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
         
         return cell
@@ -121,20 +109,18 @@ extension TodoViewController: UITableViewDataSource {
         guard let cell = sender.superview?.superview as? TodoTableViewCell,
               let indexPath = todoView.todoTableView.indexPath(for: cell) else { return }
         
-        var todoItem = viewModel.todoList[indexPath.row]
+        var todoItem = viewModel.dataManager.todoList[indexPath.row]
         
         if sender.isOn {
             todoItem.isCompleted = true
             cell.textLabel?.textColor = UIColor.gray
             
-            viewModel.addDone(description: todoItem.description)
         } else {
             todoItem.isCompleted = false
             cell.textLabel?.textColor = UIColor.black
             
-            viewModel.removeDone(with: todoItem.description)
         }
-        viewModel.todoList[indexPath.row] = todoItem
+        viewModel.dataManager.todoList[indexPath.row] = todoItem
     }
     
     
