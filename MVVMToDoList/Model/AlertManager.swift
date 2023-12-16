@@ -26,7 +26,7 @@ class AlertManager {
         
         let action1 = UIAlertAction(title: button1Title, style: .default) { _ in
             if let text = alert.textFields?.first?.text {
-                completion1?(text)
+                    completion1?(text)
             }
         }
         let action2 = UIAlertAction(title: button2Title, style: .cancel)

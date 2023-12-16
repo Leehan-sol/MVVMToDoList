@@ -63,6 +63,7 @@ class TodoViewController: UIViewController {
     
 }
 
+
 // MARK: - UITableViewDelegate
 extension TodoViewController: UITableViewDelegate {
     
@@ -70,13 +71,10 @@ extension TodoViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-    
     // 할일 삭제
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
+            viewModel.removeTodo(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
@@ -87,7 +85,7 @@ extension TodoViewController: UITableViewDelegate {
 // MARK: - UITableViewDataSource
 extension TodoViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.dataManager.todoList.count
+        return viewModel.todoListCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -95,33 +93,27 @@ extension TodoViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.textLabel?.text = viewModel.dataManager.todoList[indexPath.row].description
-        cell.doneSwitch.isOn = viewModel.dataManager.todoList[indexPath.row].isCompleted
-        
-        cell.textLabel?.textColor = viewModel.dataManager.todoList[indexPath.row].isCompleted ? UIColor.gray : UIColor.black
-        cell.doneSwitch.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
-        
+        if var todoItem = viewModel.todoItem(at: indexPath.row) {
+            cell.textLabel?.text = todoItem.description
+            cell.doneSwitch.isOn = todoItem.isCompleted
+            cell.textLabel?.textColor = viewModel.getTextColor(at: indexPath.row).textColor()
+            
+            // 클로저 설정
+            cell.switchChangedHandler = { [weak self] isOn in
+                guard let self = self else { return }
+                
+                if isOn {
+                    todoItem.isCompleted = true
+                    self.viewModel.addDone(description: todoItem.description)
+                } else {
+                    todoItem.isCompleted = false
+                    self.viewModel.removeDone(with: todoItem.description)
+                }
+                self.viewModel.dataManager.todoList[indexPath.row] = todoItem
+            }
+        }
         return cell
     }
-    
-    
-    @objc func switchChanged(_ sender: UISwitch) {
-        guard let cell = sender.superview?.superview as? TodoTableViewCell,
-              let indexPath = todoView.todoTableView.indexPath(for: cell) else { return }
-        
-        var todoItem = viewModel.dataManager.todoList[indexPath.row]
-        
-        if sender.isOn {
-            todoItem.isCompleted = true
-            cell.textLabel?.textColor = UIColor.gray
-            
-        } else {
-            todoItem.isCompleted = false
-            cell.textLabel?.textColor = UIColor.black
-            
-        }
-        viewModel.dataManager.todoList[indexPath.row] = todoItem
-    }
-    
-    
 }
+
+

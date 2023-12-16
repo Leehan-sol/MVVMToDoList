@@ -11,6 +11,8 @@ import Then
 
 class TodoTableViewCell: UITableViewCell {
     
+    var switchChangedHandler: ((Bool) -> Void)?
+    
     // MARK: - UI Properties
     let titleLabel = UILabel().then {
         $0.numberOfLines = 0
@@ -19,11 +21,13 @@ class TodoTableViewCell: UITableViewCell {
     let doneSwitch = UISwitch().then {
         $0.isEnabled = true
     }
+
     
     // MARK: - Life Cycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setUI()
+        setSwitchTarget()
     }
     
     required init?(coder: NSCoder) {
@@ -48,6 +52,19 @@ class TodoTableViewCell: UITableViewCell {
             $0.centerY.equalToSuperview()
         }
         
+    }
+    
+    func setSwitchTarget() {
+        doneSwitch.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
+    }
+    
+    @objc func switchChanged(_ sender: UISwitch) {
+        updateLabelColor()
+        switchChangedHandler?(sender.isOn)
+    }
+    
+    func updateLabelColor() {
+        titleLabel.textColor = doneSwitch.isOn ? .gray : .black
     }
     
     

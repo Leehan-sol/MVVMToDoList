@@ -26,6 +26,8 @@
 		CC4C4D3A2B2D854100BFB3DA /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4C4D392B2D854100BFB3DA /* DataManager.swift */; };
 		CC4C4D3C2B2D8F0300BFB3DA /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4C4D3B2B2D8F0300BFB3DA /* MainViewModel.swift */; };
 		CC4C4D3E2B2DCD4600BFB3DA /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4C4D3D2B2DCD4600BFB3DA /* AlertManager.swift */; };
+		CC4C4D402B2DDA1200BFB3DA /* TodoItemColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4C4D3F2B2DDA1200BFB3DA /* TodoItemColor.swift */; };
+		CC4C4D422B2DDD9000BFB3DA /* DoneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4C4D412B2DDD9000BFB3DA /* DoneViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +50,8 @@
 		CC4C4D392B2D854100BFB3DA /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		CC4C4D3B2B2D8F0300BFB3DA /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		CC4C4D3D2B2DCD4600BFB3DA /* AlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
+		CC4C4D3F2B2DDA1200BFB3DA /* TodoItemColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemColor.swift; sourceTree = "<group>"; };
+		CC4C4D412B2DDD9000BFB3DA /* DoneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoneViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +106,7 @@
 				678AA88C2B187CCA0043493D /* DoneListModel.swift */,
 				CC4C4D392B2D854100BFB3DA /* DataManager.swift */,
 				CC4C4D3D2B2DCD4600BFB3DA /* AlertManager.swift */,
+				CC4C4D3F2B2DDA1200BFB3DA /* TodoItemColor.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -132,6 +137,7 @@
 			children = (
 				678AA8882B18798E0043493D /* DoneView.swift */,
 				678AA88A2B1879990043493D /* DoneViewController.swift */,
+				CC4C4D412B2DDD9000BFB3DA /* DoneViewModel.swift */,
 			);
 			path = DoneViewController;
 			sourceTree = "<group>";
@@ -216,6 +222,7 @@
 			files = (
 				677651AC2B1A313600BD6B7C /* TodoViewModel.swift in Sources */,
 				678AA8812B1876470043493D /* TodoView.swift in Sources */,
+				CC4C4D402B2DDA1200BFB3DA /* TodoItemColor.swift in Sources */,
 				CC4C4D3E2B2DCD4600BFB3DA /* AlertManager.swift in Sources */,
 				678AA87F2B1876380043493D /* TodoViewController.swift in Sources */,
 				678AA8892B18798E0043493D /* DoneView.swift in Sources */,
@@ -225,6 +232,7 @@
 				CC4C4D3C2B2D8F0300BFB3DA /* MainViewModel.swift in Sources */,
 				678AA8832B1878230043493D /* TodoListModel.swift in Sources */,
 				678AA88F2B187F900043493D /* TodoTableViewCell.swift in Sources */,
+				CC4C4D422B2DDD9000BFB3DA /* DoneViewModel.swift in Sources */,
 				678AA88D2B187CCA0043493D /* DoneListModel.swift in Sources */,
 				678AA88B2B1879990043493D /* DoneViewController.swift in Sources */,
 				CC4C4D3A2B2D854100BFB3DA /* DataManager.swift in Sources */,

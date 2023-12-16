@@ -11,13 +11,13 @@ class DoneViewController: UIViewController {
     
     // MARK: - Properties
     private let doneView = DoneView()
-    var doneList: [DoneListModel] = []
-
+    var viewModel: DoneViewModel!
+    
     // MARK: - Life Cycle
     override func loadView() {
         view = doneView
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
@@ -30,14 +30,11 @@ class DoneViewController: UIViewController {
         view.backgroundColor = .systemBackground
     }
     
-    
     private func setTableView(){
         doneView.doneTableView.delegate = self
         doneView.doneTableView.dataSource = self
         doneView.doneTableView.register(TodoTableViewCell.self, forCellReuseIdentifier: "TVCell")
     }
-
-
 }
 
 
@@ -45,15 +42,15 @@ class DoneViewController: UIViewController {
 extension DoneViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            tableView.deselectRow(at: indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
-
+    
 }
 
 // MARK: - UITableViewDataSource
 extension DoneViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        doneList.count
+        return viewModel.doneListCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -61,13 +58,11 @@ extension DoneViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.textLabel?.text = doneList[indexPath.row].description
-        cell.doneSwitch.isOn = doneList[indexPath.row].isCompleted
-        
+        if let doneItem = viewModel.doneItem(at: indexPath.row) {
+            cell.textLabel?.text = doneItem.description
+            cell.doneSwitch.isOn = doneItem.isCompleted
+        }
         return cell
     }
-    
-    
-    
     
 }

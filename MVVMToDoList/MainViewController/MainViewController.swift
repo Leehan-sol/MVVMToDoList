@@ -58,7 +58,9 @@ class MainViewController: UIViewController {
     }
     
     @objc func goDoneButtonTapped(){
+        let doneViewModel = DoneViewModel(dataManager: dataManager)
         let doneVC = DoneViewController()
+        doneVC.viewModel = doneViewModel
         self.navigationController?.pushViewController(doneVC, animated: true)
     }
     
