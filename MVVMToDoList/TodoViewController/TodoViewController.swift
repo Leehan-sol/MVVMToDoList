@@ -94,9 +94,9 @@ extension TodoViewController: UITableViewDataSource {
         }
         
         if var todoItem = viewModel.todoItem(at: indexPath.row) {
-            cell.textLabel?.text = todoItem.description
+            cell.titleLabel.text = todoItem.description
             cell.doneSwitch.isOn = todoItem.isCompleted
-            cell.textLabel?.textColor = viewModel.getTextColor(at: indexPath.row).textColor()
+            cell.titleLabel.textColor = viewModel.getTextColor(at: indexPath.row).textColor()
             
             // 클로저 설정
             cell.switchChangedHandler = { [weak self] isOn in
@@ -110,10 +110,14 @@ extension TodoViewController: UITableViewDataSource {
                     self.viewModel.removeDone(with: todoItem.description)
                 }
                 self.viewModel.dataManager.todoList[indexPath.row] = todoItem
+                
+                // 스위치 상태 변경 후 라벨 색상 업데이트
+                cell.updateLabelColor()
             }
         }
         return cell
     }
+
 }
 
 

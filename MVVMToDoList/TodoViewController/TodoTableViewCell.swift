@@ -59,7 +59,6 @@ class TodoTableViewCell: UITableViewCell {
     }
     
     @objc func switchChanged(_ sender: UISwitch) {
-        updateLabelColor()
         switchChangedHandler?(sender.isOn)
     }
     
