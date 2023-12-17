@@ -35,11 +35,10 @@ class TodoViewModel {
     
     // 할일 삭제
     func removeTodo(at index: Int) {
-        dataManager.todoList.remove(at: index)
-        
         if let index = dataManager.doneList.firstIndex(where: { $0.description == dataManager.todoList[index].description }) {
             dataManager.doneList.remove(at: index)
         }
+        dataManager.todoList.remove(at: index)
     }
     
     func removeDone(with description: String) {
