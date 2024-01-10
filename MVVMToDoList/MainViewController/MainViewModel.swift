@@ -7,12 +7,12 @@
 
 import Foundation
 
+
 class MainViewModel {
     let dataManager: SendDataProtocol
     
     init(dataManager: SendDataProtocol) {
         self.dataManager = dataManager
     }
-    
-    
+
 }

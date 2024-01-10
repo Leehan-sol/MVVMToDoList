@@ -66,5 +66,4 @@ class TodoTableViewCell: UITableViewCell {
         titleLabel.textColor = doneSwitch.isOn ? .gray : .black
     }
     
-    
 }

@@ -11,9 +11,18 @@ class TodoViewController: UIViewController {
     
     // MARK: - Properties
     private let todoView = TodoView()
-    var viewModel: TodoViewModel!
+    var viewModel: TodoViewModel
     
     // MARK: - Life Cycle
+    init(viewModel: TodoViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func loadView() {
         view = todoView
     }
@@ -98,7 +107,7 @@ extension TodoViewController: UITableViewDataSource {
             cell.doneSwitch.isOn = todoItem.isCompleted
             cell.titleLabel.textColor = viewModel.getTextColor(at: indexPath.row).textColor()
             
-            // 클로저 설정
+            // ✨ 클로저 설정
             cell.switchChangedHandler = { [weak self] isOn in
                 guard let self = self else { return }
                 

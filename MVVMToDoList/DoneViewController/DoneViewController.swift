@@ -11,9 +11,18 @@ class DoneViewController: UIViewController {
     
     // MARK: - Properties
     private let doneView = DoneView()
-    var viewModel: DoneViewModel!
+    var viewModel: DoneViewModel
     
     // MARK: - Life Cycle
+    init(viewModel: DoneViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func loadView() {
         view = doneView
     }

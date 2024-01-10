@@ -7,8 +7,6 @@
 
 import UIKit
 
-import UIKit
-
 class AlertManager {
     func showAlertWithTF(from viewController: UIViewController,
                          title: String,
