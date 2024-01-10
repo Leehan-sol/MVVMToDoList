@@ -47,18 +47,8 @@ class TodoViewModel {
     }
     
     // 아이템 가져오기
-    func todoItem(at index: Int) -> TodoListModel? {
-        guard index >= 0, index < dataManager.todoList.count else {
-            return nil
-        }
+    func todoItem(at index: Int) -> TodoListModel {
         return dataManager.todoList[index]
-    }
-    
-    func getTextColor(at index: Int) -> TodoItemColor {
-        guard let todoItem = todoItem(at: index) else {
-            return .notCompleted
-        }
-        return todoItem.isCompleted ? .completed : .notCompleted
     }
     
 }

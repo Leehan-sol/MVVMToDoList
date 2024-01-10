@@ -13,6 +13,12 @@ class TodoTableViewCell: UITableViewCell {
     
     var switchChangedHandler: ((Bool) -> Void)?
     
+    var todoItem: TodoListModel? {
+        didSet {
+            configureUI()
+        }
+    }
+    
     // MARK: - UI Properties
     let titleLabel = UILabel().then {
         $0.numberOfLines = 0
@@ -21,7 +27,7 @@ class TodoTableViewCell: UITableViewCell {
     let doneSwitch = UISwitch().then {
         $0.isEnabled = true
     }
-
+    
     
     // MARK: - Life Cycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -58,12 +64,20 @@ class TodoTableViewCell: UITableViewCell {
         doneSwitch.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
     }
     
-    @objc func switchChanged(_ sender: UISwitch) {
-        switchChangedHandler?(sender.isOn)
+    func configureUI() {
+        if let todoItem = todoItem {
+            self.titleLabel.text = todoItem.description
+            self.doneSwitch.isOn = todoItem.isCompleted
+            self.titleLabel.textColor = todoItem.isCompleted ? .gray : .black
+        } else {
+            self.titleLabel.text = ""
+            self.doneSwitch.isOn = false
+            self.titleLabel.textColor = .black
+        }
     }
     
-    func updateLabelColor() {
-        titleLabel.textColor = doneSwitch.isOn ? .gray : .black
+    @objc func switchChanged(_ sender: UISwitch) {
+        switchChangedHandler?(sender.isOn)
     }
     
 }

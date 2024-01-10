@@ -11,7 +11,7 @@ class TodoViewController: UIViewController {
     
     // MARK: - Properties
     private let todoView = TodoView()
-    var viewModel: TodoViewModel
+    private let viewModel: TodoViewModel
     
     // MARK: - Life Cycle
     init(viewModel: TodoViewModel) {
@@ -102,31 +102,27 @@ extension TodoViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        if var todoItem = viewModel.todoItem(at: indexPath.row) {
-            cell.titleLabel.text = todoItem.description
-            cell.doneSwitch.isOn = todoItem.isCompleted
-            cell.titleLabel.textColor = viewModel.getTextColor(at: indexPath.row).textColor()
+        var todoItem = viewModel.todoItem(at: indexPath.row)
+        cell.todoItem = todoItem
+        
+        // ✨ 셀 스위치 왔다갔다하면 셀의 todoItem이 바뀌게 설정해줘야함
+        // 1. isCompleted 상태변경 2. 던리스트 추가 빼기
+        cell.switchChangedHandler = { [weak self] isOn in
+            guard let self = self else { return }
             
-            // ✨ 클로저 설정
-            cell.switchChangedHandler = { [weak self] isOn in
-                guard let self = self else { return }
-                
-                if isOn {
-                    todoItem.isCompleted = true
-                    self.viewModel.addDone(description: todoItem.description)
-                } else {
-                    todoItem.isCompleted = false
-                    self.viewModel.removeDone(with: todoItem.description)
-                }
-                self.viewModel.dataManager.todoList[indexPath.row] = todoItem
-                
-                // 스위치 상태 변경 후 라벨 색상 업데이트
-                cell.updateLabelColor()
+            if isOn {
+                todoItem.isCompleted = true
+                self.viewModel.addDone(description: todoItem.description)
+            } else {
+                todoItem.isCompleted = false
+                self.viewModel.removeDone(with: todoItem.description)
             }
+            self.viewModel.dataManager.todoList[indexPath.row] = todoItem
         }
         return cell
     }
-
+    
 }
+
 
 

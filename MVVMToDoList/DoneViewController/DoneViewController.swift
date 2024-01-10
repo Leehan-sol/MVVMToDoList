@@ -11,7 +11,7 @@ class DoneViewController: UIViewController {
     
     // MARK: - Properties
     private let doneView = DoneView()
-    var viewModel: DoneViewModel
+    private let viewModel: DoneViewModel
     
     // MARK: - Life Cycle
     init(viewModel: DoneViewModel) {
