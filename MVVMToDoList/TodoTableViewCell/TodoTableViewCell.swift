@@ -11,14 +11,12 @@ import Then
 
 class TodoTableViewCell: UITableViewCell {
     
-    var switchChangedHandler: ((Bool) -> Void)?
-    
-    var todoItem: TodoListModel? {
-        didSet {
-            configureUI()
-        }
-    }
-    
+    var viewModel: TodoItemViewModel? {
+          didSet {
+              configureUI()
+          }
+      }
+
     // MARK: - UI Properties
     let titleLabel = UILabel().then {
         $0.numberOfLines = 0
@@ -63,21 +61,18 @@ class TodoTableViewCell: UITableViewCell {
     func setSwitchTarget() {
         doneSwitch.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
     }
-    
+
     func configureUI() {
-        if let todoItem = todoItem {
-            self.titleLabel.text = todoItem.description
-            self.doneSwitch.isOn = todoItem.isCompleted
-            self.titleLabel.textColor = todoItem.isCompleted ? .gray : .black
-        } else {
-            self.titleLabel.text = ""
-            self.doneSwitch.isOn = false
-            self.titleLabel.textColor = .black
-        }
-    }
-    
+         guard let viewModel = viewModel else { return }
+         titleLabel.text = viewModel.title
+         doneSwitch.isOn = viewModel.isCompleted
+         titleLabel.textColor = viewModel.isCompleted ? .gray : .black
+     }
+
+  
     @objc func switchChanged(_ sender: UISwitch) {
-        switchChangedHandler?(sender.isOn)
+        viewModel?.handleSwitchToggle(isOn: sender.isOn)
+        configureUI()
     }
     
 }

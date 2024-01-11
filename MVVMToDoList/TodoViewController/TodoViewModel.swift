@@ -51,5 +51,34 @@ class TodoViewModel {
         return dataManager.todoList[index]
     }
     
+    func handleSwitchToggle(for todoItem: inout TodoListModel, isOn: Bool) {
+        // 스위치 상태에 따라서 수행할 작업을 구현합니다.
+        if isOn {
+            todoItem.isCompleted = true
+            addDone(description: todoItem.description)
+        } else {
+            // 스위치가 꺼졌을 때의 동작을 정의합니다.
+            // 예: Todo 아이템을 미완료 상태로 변경하는 작업 수행
+            todoItem.isCompleted = false
+            removeDone(with: todoItem.description)
+        }
+    }
+    
+    // ✨ 셀 스위치 왔다갔다하면 셀의 todoItem이 바뀌게 설정해줘야함
+    // 1. isCompleted 상태변경 2. 던리스트 추가 빼기
+    //        cell.switchChangedHandler = { [weak self] isOn in
+    //            guard let self = self else { return }
+    //
+    //            if isOn {
+    //                todoItem.isCompleted = true
+    //                self.viewModel.addDone(description: todoItem.description)
+    //            } else {
+    //                todoItem.isCompleted = false
+    //                self.viewModel.removeDone(with: todoItem.description)
+    //            }
+    //            self.viewModel.dataManager.todoList[indexPath.row] = todoItem
+    //        }
+    //
+    
 }
 

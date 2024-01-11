@@ -101,27 +101,20 @@ extension TodoViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "TVCell", for: indexPath) as? TodoTableViewCell else {
             return UITableViewCell()
         }
-        
-        var todoItem = viewModel.todoItem(at: indexPath.row)
-        cell.todoItem = todoItem
-        
-        // ✨ 셀 스위치 왔다갔다하면 셀의 todoItem이 바뀌게 설정해줘야함
-        // 1. isCompleted 상태변경 2. 던리스트 추가 빼기
-        cell.switchChangedHandler = { [weak self] isOn in
-            guard let self = self else { return }
-            
-            if isOn {
-                todoItem.isCompleted = true
-                self.viewModel.addDone(description: todoItem.description)
-            } else {
-                todoItem.isCompleted = false
-                self.viewModel.removeDone(with: todoItem.description)
-            }
-            self.viewModel.dataManager.todoList[indexPath.row] = todoItem
-        }
+
+        let todoItemViewModel = TodoItemViewModel(todoItem: viewModel.todoItem(at: indexPath.row))
+        cell.viewModel = todoItemViewModel
+
+//        todoItemViewModel.switchChangedHandler = { [weak self] isOn in
+//            guard let self = self else { return }
+//                //self.viewModel.handleSwitchToggle(for: todoItemViewModel.todoItem, isOn: isOn)
+//           tableView.reloadData()  // 전체 테이블 뷰 리로드 대신에 해당 indexPath만 리로드하도록 처리
+//           // tableView.reloadRows(at: [indexPath], with: .none)
+//        }
+
         return cell
     }
-    
+
 }
 
 
