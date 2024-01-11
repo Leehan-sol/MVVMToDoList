@@ -10,6 +10,7 @@ import SnapKit
 import Then
 
 class TodoTableViewCell: UITableViewCell {
+    var switchChangedHandler: ((Bool) -> Void)?
     
     var viewModel: TodoItemViewModel? {
           didSet {
@@ -32,6 +33,7 @@ class TodoTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setUI()
         setSwitchTarget()
+        configureUI()
     }
     
     required init?(coder: NSCoder) {
@@ -71,6 +73,7 @@ class TodoTableViewCell: UITableViewCell {
 
   
     @objc func switchChanged(_ sender: UISwitch) {
+        switchChangedHandler?(sender.isOn)
         viewModel?.handleSwitchToggle(isOn: sender.isOn)
         configureUI()
     }

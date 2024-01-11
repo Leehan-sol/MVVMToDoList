@@ -101,17 +101,15 @@ extension TodoViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "TVCell", for: indexPath) as? TodoTableViewCell else {
             return UITableViewCell()
         }
-
+        
         let todoItemViewModel = TodoItemViewModel(todoItem: viewModel.todoItem(at: indexPath.row))
         cell.viewModel = todoItemViewModel
-
-//        todoItemViewModel.switchChangedHandler = { [weak self] isOn in
-//            guard let self = self else { return }
-//                //self.viewModel.handleSwitchToggle(for: todoItemViewModel.todoItem, isOn: isOn)
-//           tableView.reloadData()  // 전체 테이블 뷰 리로드 대신에 해당 indexPath만 리로드하도록 처리
-//           // tableView.reloadRows(at: [indexPath], with: .none)
-//        }
-
+        
+        cell.switchChangedHandler = { [weak self] isOn in
+            guard let self = self else { return }
+            self.viewModel.todoIsCompleted(isOn: isOn, at: indexPath.row)
+        }
+        
         return cell
     }
 

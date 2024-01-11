@@ -21,7 +21,7 @@ class TodoViewModel {
     }
     
     // MARK: - Func
-    // 할일 추가
+    // 투두 추가
     func addTodo(description: String) {
         let newTodo = TodoListModel(description: description, isCompleted: false)
         dataManager.todoList.append(newTodo)
@@ -32,7 +32,7 @@ class TodoViewModel {
         dataManager.doneList.append(newDone)
     }
     
-    // 할일 삭제
+    // 투두 삭제
     func removeTodo(at index: Int) {
         if let index = dataManager.doneList.firstIndex(where: { $0.description == dataManager.todoList[index].description }) {
             dataManager.doneList.remove(at: index)
@@ -46,39 +46,24 @@ class TodoViewModel {
         }
     }
     
-    // 아이템 가져오기
+    // 투두 가져오기
     func todoItem(at index: Int) -> TodoListModel {
         return dataManager.todoList[index]
     }
     
-    func handleSwitchToggle(for todoItem: inout TodoListModel, isOn: Bool) {
-        // 스위치 상태에 따라서 수행할 작업을 구현합니다.
+    // 투두 isCompleted 변경
+    func todoIsCompleted(isOn: Bool, at index: Int) {
+        var todoItem = dataManager.todoList[index]
+        
         if isOn {
             todoItem.isCompleted = true
             addDone(description: todoItem.description)
         } else {
-            // 스위치가 꺼졌을 때의 동작을 정의합니다.
-            // 예: Todo 아이템을 미완료 상태로 변경하는 작업 수행
             todoItem.isCompleted = false
             removeDone(with: todoItem.description)
         }
+        dataManager.todoList[index] = todoItem
     }
-    
-    // ✨ 셀 스위치 왔다갔다하면 셀의 todoItem이 바뀌게 설정해줘야함
-    // 1. isCompleted 상태변경 2. 던리스트 추가 빼기
-    //        cell.switchChangedHandler = { [weak self] isOn in
-    //            guard let self = self else { return }
-    //
-    //            if isOn {
-    //                todoItem.isCompleted = true
-    //                self.viewModel.addDone(description: todoItem.description)
-    //            } else {
-    //                todoItem.isCompleted = false
-    //                self.viewModel.removeDone(with: todoItem.description)
-    //            }
-    //            self.viewModel.dataManager.todoList[indexPath.row] = todoItem
-    //        }
-    //
-    
+
 }
 
